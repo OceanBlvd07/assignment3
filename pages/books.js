@@ -8,8 +8,6 @@ export default function Books() {
 
   const router = useRouter();
 
-  if (!router.isReady) return null;
-
   const page = parseInt(router.query.page) || 1;
 
   let queryString = { ...router.query };
@@ -26,8 +24,10 @@ export default function Books() {
   }
 
   const { data, error } = useSWR(
-    `https://openlibrary.org/search.json?q=${queryString}&page=${page}&limit=10`
+    router.isReady ? `https://openlibrary.org/search.json?q=${queryString}&page=${page}&limit=10` : null
   );
+
+  if (!router.isReady) return null;
 
   if (error) return <p>Error loading data</p>;
   if (!data) return <p>Loading...</p>;
